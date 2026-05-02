@@ -1,0 +1,22 @@
+# Core ML
+torch>=2.1.0
+pytorch-lightning>=2.2.0
+transformers>=4.40.0
+sentencepiece>=0.1.99
+
+# Data
+datasets>=2.18.0
+pandas>=2.0.0
+openpyxl>=3.1.0        # reading .xlsx
+
+# Evaluation
+sacrebleu>=2.3.1        # BLEU, chrF2, TER
+
+# Optional — neural MT metric (comment out if not needed)
+# unbabel-comet>=2.2.0
+
+# Visualisation (for compare_models.py chart)
+matplotlib>=3.8.0
+
+# Misc
+tqdm>=4.66.0
