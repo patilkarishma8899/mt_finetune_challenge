@@ -1,0 +1,53 @@
+# configs/train_config.yaml
+# ─────────────────────────────────────────────────────────────────────────────
+# Reproducible training configuration for Challenge 1
+# Pass to train.py by expanding: python scripts/train.py $(python -c "
+#   import yaml, sys
+#   cfg = yaml.safe_load(open('configs/train_config.yaml'))
+#   print(' '.join(f'--{k} {v}' for k,v in cfg.items()))
+# ")
+#
+# Or simply copy these values to your train.py call explicitly.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Model ────────────────────────────────────────────────────────────────────
+model_name: Helsinki-NLP/opus-mt-en-nl
+#
+#  Why this model?
+#  ─────────────────
+#  • Encoder-decoder Transformer (MarianMT architecture, ~74M parameters)
+#    — satisfies the "small encoder-decoder" requirement
+#  • Pre-trained on OPUS en-nl (~60M sentence pairs across domains)
+#  • Produces competitive baseline BLEU (~35–40) on news before fine-tuning
+#  • Tokenizer uses SentencePiece with a shared 65k vocabulary
+#  • Easily fits on a single 8GB GPU (or even CPU for inference)
+#
+#  Alternatives considered:
+#    Helsinki-NLP/opus-mt-tc-big-en-nl  — larger (300M), higher quality,
+#                                         but violates "small model" spirit
+#    t5-small (mT5)                      — multilingual but not en-nl specific;
+#                                         needs task prefix tuning
+#    facebook/nllb-200-distilled-600M    — excellent but ~600M params
+
+# ── Data ─────────────────────────────────────────────────────────────────────
+train_tsv: data/wmt_it/train.tsv
+val_tsv:   data/wmt_it/val.tsv
+max_src_len: 128
+max_tgt_len: 128
+
+# ── Training ─────────────────────────────────────────────────────────────────
+output_dir: models/marian-en-nl-ft
+max_epochs: 5
+batch_size: 32            # reduce to 16 if OOM on < 8 GB GPU
+lr: 3.0e-5                # conservative LR to avoid catastrophic forgetting
+weight_decay: 0.01
+warmup_steps: 500
+label_smoothing: 0.1      # regularises; helps on small IT corpus
+accumulate_grad_batches: 1 # set to 2 if batch_size must be reduced
+num_workers: 4
+precision: "16-mixed"     # AMP — speeds up training ~2× on modern GPUs
+seed: 42
+patience: 3               # early stopping
+
+# ── Evaluation ───────────────────────────────────────────────────────────────
+num_beams: 4              # beam search width at evaluation time
