@@ -32,8 +32,8 @@ mt-finetune-challenge1
 ## HoW to run 
 ### Run Training
 ```
-python.train.txt
-```
+ python scripts/train.py
+ ```
 ### Run Evaluation
 ```
 python evaluate.py
@@ -45,4 +45,4 @@ python evaluate.py
 | Pretrained | General (FLORES) | 28.5       |
 | Pretrained | Software Domain  | 24.2       |
 | Fine-tuned | General (FLORES) | 27.1       |
-| Fine-tuned | Software Domain  | **36.8**   |
+| Fine-tuned | Software Domain  | 36.8  |
